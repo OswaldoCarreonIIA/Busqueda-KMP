@@ -1,0 +1,46 @@
+class Patron{
+	String patron;
+	int[] regresos;
+
+	//Constructores;
+	Patron(String patron){
+		this.patron = patron;
+		regresos = new int [patron.length()];
+	}
+
+
+	//Métodos;
+	public int[] getRegresos(){
+		regresos[0] = -1;
+		int aux=0; //esta variable me ayudará a no perder el valor de regresos[i]., cuando ya funcionó.
+
+		for(int i=1;i<patron.length();i++){
+			aux = regresos[i-1]; // guardo el valor de la posición anterior, que es la que estamos seguos que ya funcionó.
+			regresos[i] = regresos[i-1]+1; //le asigno el valor de la posición anterior +1, y probaremos hasta ver cuál funciona:
+			 	
+			while(comprobar(patron,i,regresos[i])==false){
+				if(regresos[i-1] == -1){ // preguntamos por el caso especial.
+					regresos[i] = -1;
+					regresos[i-1] = aux;
+					break;
+				}
+
+				regresos[i] = regresar(regresos,regresos[i-1],i-1);
+			}//Fin while.
+			regresos[i-1] = aux;// volvemos a actualizar el valor anterior, que ya había funcionado.
+		}//Fin for.	
+
+		return regresos;
+	}
+	//Submétodos;
+	private boolean comprobar(String patron,int indice_uno, int indice_dos){
+		if (patron.charAt(indice_uno) == patron.charAt(indice_dos)) return true;
+		else return false;
+	}
+
+	private int regresar(int[] regresos,int valor,int indice){
+		regresos[indice] = regresos[valor];
+		return regresos[indice]+1;
+	}
+
+}
