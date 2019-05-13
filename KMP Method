@@ -1,13 +1,27 @@
-ArrayList<Integer> ubicaciones = new ArrayList<Integer>();
+class Kmp{
+	String palabra;
+	String texto;
+	int[] regresos;
+	int[] busqueda;
+	Kmp(String palabra,String texto){
+		this.palabra = palabra;
+		this.texto = texto;
+		Patron patron = new Patron(this.palabra);
+		regresos = patron.getRegresos();
+		busqueda = new int[this.texto.length()];
+	}
 
-		for(int i=0;i<texto.length();i++){
-			System.out.println(i+": "+texto.charAt(i));
-		}
+	public ArrayList<Integer> buscar(){
+		return search(this.palabra,this.texto,this.regresos,this.busqueda);
+	}
+	
 
+	private ArrayList<Integer> search(String palabra,String texto, int[] regresos, int[] busqueda){
+		ArrayList<Integer> ubicaciones = new ArrayList<Integer>();
 		busqueda[0] = 0;
 		for(int i=0;i<texto.length();i++){
 		
-			while(comprobar(texto,patron,busqueda,i)==false){
+			while(comprobar(texto,palabra,busqueda,i)==false){
 				if(i==0 || busqueda[i-1] == -1){
 					busqueda[i] = -1;
 					break;
@@ -15,35 +29,28 @@ ArrayList<Integer> ubicaciones = new ArrayList<Integer>();
 				busqueda[i] = regresar(busqueda,regresos,i-1);
 			}//Fin while.
 
-			if(busqueda[i]==patron.length()-1){
+			if(busqueda[i]==palabra.length()-1){
 				ubicaciones.add(i);
 				busqueda[i] = regresos[busqueda[i]];
 			}
 			
 			if(i!=texto.length()-1)
 				busqueda[i+1] = busqueda[i]+1;
-
-			System.out.println(busqueda[i]);
 		}//Fin for.
 
-		if(!ubicaciones.isEmpty()){
-			System.out.println("ubicaciones encontradas en:");
-			for(int i=0;i<ubicaciones.size();i++){
-				System.out.println(ubicaciones.get(i)-(patron.length()-1)+" - "+ubicaciones.get(i)+" .");
-			}
-		}
-				
 
-	}//Main.
+		return ubicaciones;
+	}
 
 
-	static boolean comprobar(String texto, String patron,int[] busqueda, int indice){
+	private boolean comprobar(String texto, String patron,int[] busqueda, int indice){
 		int indice2 = busqueda[indice];
 		if(patron.charAt(indice2) == texto.charAt(indice)) return true;
 		return false;
 	}
 
-	static int regresar(int[] busqueda,int[] regresos,int indice){
+	private int regresar(int[] busqueda,int[] regresos,int indice){
 		busqueda[indice] = regresos[busqueda[indice]];
 		return busqueda[indice]+1;
 	}
+}//Fin clase Kmp.
